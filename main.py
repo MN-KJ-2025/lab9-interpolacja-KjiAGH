@@ -18,7 +18,14 @@ def chebyshev_nodes(n: int = 10) -> np.ndarray | None:
         (np.ndarray): Wektor węzłów Czebyszewa (n,).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
+    if not isinstance(n, int) or n <= 0:
+        return None
+    
+    nodes = np.ones(n+1)
+
+    for k in range (len(nodes)):
+        nodes[k] = np.cos((k * np.pi)/(n-1))
+    return nodes
 
 
 def bar_cheb_weights(n: int = 10) -> np.ndarray | None:
@@ -31,8 +38,13 @@ def bar_cheb_weights(n: int = 10) -> np.ndarray | None:
         (np.ndarray): Wektor wag dla węzłów Czebyszewa (n,).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
-
+    if not isinstance(n, int) or n <= 0:
+        return None
+    
+    weights = [np.power(-1, i) for i in range(n+1)]
+    weights[0] = 0.5
+    weights(n) = 0.5*(-1)**n
+    return np.array(weights)
 
 def barycentric_inte(
     xi: np.ndarray, yi: np.ndarray, wi: np.ndarray, x: np.ndarray
@@ -52,8 +64,20 @@ def barycentric_inte(
         (np.ndarray): Wektor wartości funkcji interpolującej (n,).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
-
+    if not (isinstance(xi, np.ndarray) and isinstance(yi, np.ndarray) and 
+            isinstance(wi, np.ndarray) and isinstance(x, np.ndarray)):
+        return None
+    if not (len(xi) == len(yi) == len(wi)):
+        return None
+    
+    Result = []
+    for i in np.nditer(x):
+        if i in xi:
+            Result.append(yi[np.where(xi == i)[0][0]])
+        else:
+            L = wi / (i - xi)
+            Result.append(yi@L / np.sum(L))
+    return np.array(Result)
 
 def L_inf(
     xr: int | float | list | np.ndarray, x: int | float | list | np.ndarray
@@ -71,4 +95,13 @@ def L_inf(
         (float): Wartość normy L-nieskończoność.
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
+    if not (isinstance(xr, (int, float, list, np.ndarray)) and 
+            isinstance(x, (int, float, list, np.ndarray))):
+        return np.NaN
+    
+    xr_array = np.array(xr)
+    x_array = np.array(x)
+
+    if xr_array.shape != x_array.shape:
+        return np.NaN
+    return np.max(np.abs(xr_array - x_array))
