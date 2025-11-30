@@ -21,9 +21,9 @@ def chebyshev_nodes(n: int = 10) -> np.ndarray | None:
     if not isinstance(n, int) or n <= 0:
         return None
     
-    nodes = np.ones(n+1)
+    nodes = np.ones(n)
 
-    for k in range (len(nodes)):
+    for k in range(len(nodes)):
         nodes[k] = np.cos((k * np.pi)/(n-1))
     return nodes
 
@@ -41,9 +41,9 @@ def bar_cheb_weights(n: int = 10) -> np.ndarray | None:
     if not isinstance(n, int) or n <= 0:
         return None
     
-    weights = [np.power(-1, i) for i in range(n+1)]
+    weights = [np.power(-1, i) for i in range(n)]
     weights[0] = 0.5
-    weights(n) = 0.5*(-1)**n
+    weights[n-1] = 0.5*(-1)**(n-1)
     return np.array(weights)
 
 def barycentric_inte(
